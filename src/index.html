@@ -1621,14 +1621,6 @@
                                 <div class="vertical-menu-item">
                                     <a href="#" onclick="return showValidatorScreen();" data-lang-key="validator-options" tabindex="4003">Validator Options</a>
                                 </div>
-                                <div class="divider"></div>
-                                <div class="vertical-menu-item">
-                                    <a href="#" onclick="return getQuantumCoinsForTokens();" data-lang-key="get-coins-for-dogep-tokens" tabindex="4004">Get Coins For DogeP Tokens</a>
-                                </div>
-                                <div class="divider"></div>
-                                <div class="vertical-menu-item">
-                                    <a href="#" onclick="return getHeisenTokens();" data-lang-key="get-heisen-for-dogep-tokens" tabindex="4005">Get Heisen Tokens For DogeP Tokens</a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2477,6 +2469,9 @@
     <script src="js/validator/pausevalidation.js"></script>
     <script src="js/validator/resumevalidation.js"></script>
 
+    <!--https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js-->
+    <script src="js/ethers.umd.min.js"></script>
+
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             initApp();
@@ -2487,7 +2482,7 @@
         };
 
         window.addEventListener("unhandledrejection", event => {
-            showErrorAndLockup(message);
+            showErrorAndLockup(event.reason);
         });
 
         window.onload = function () {

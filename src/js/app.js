@@ -227,7 +227,7 @@ function resizeBoxes() {
 
     elements = document.getElementsByClassName("roundex-box-middle");
     for(let i =0; i < elements.length;i++){
-        elements[i].style.maxHeight  = maxHeightMiddle;
+        
     }
 }
 
@@ -647,7 +647,7 @@ function showBackupWalletScreen() {
 async function saveWallet() {
     try {
         let walletIndex = await walletGetMaxIndex();
-        if (walletIndex == -1) {            
+        if (walletIndex == -1) {
             if (additionalWalletMode == true) {
                 hideWaitingBox();
                 showErrorAndLockup(getGenericError(""));
