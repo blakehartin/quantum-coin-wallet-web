@@ -4,7 +4,7 @@ Quantum Coin Web Wallets
 ## Testing
 
 1) Install npm. For details see https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-2) cd src
+2) cd docs
 3) npx http-server
 4) In browser, open http://localhost:8080
 
