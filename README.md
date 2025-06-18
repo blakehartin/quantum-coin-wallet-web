@@ -1,23 +1,12 @@
-[![Build/release](https://github.com/quantumcoinproject/quantum-coin-wallet-desktop/actions/workflows/electron-forge-publish.yml/badge.svg)](https://github.com/quantumcoinproject/quantum-coin-wallet-desktop/actions/workflows/electron-forge-publish.yml)
+# Quantum Coin Web Wallet (BETA)
+Quantum Coin Web Wallets 
 
-# Quantum Coin Desktop Wallet
-Quantum Coin Desktop Wallets for Windows, Mac and Linux (Ubuntu) are built using Electron. 
-
-## Building
+## Testing
 
 1) Install npm. For details see https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-2) Install Electron. For details see https://www.electronjs.org/docs/latest/tutorial/installation
-3) Install Dependencies:
-
-		npm install
-
-3) To run the app:
-
-		npm start
-
-4) To create the build package:
-
-		npm run publish
+2) cd src
+3) npx http-server
+4) In browser, open http://localhost:8080
 
 ### Hybrid PQC
 The Web Assembly files found under the wasm folder can be generated following the instructions at https://github.com/quantumcoinproject/hybrid-pqc
@@ -51,4 +40,4 @@ This project uses jquery-qrcode that is released under MIT License https://githu
 
 wasm_exec.js is released under BSD-style License https://github.com/golang/go/blob/master/LICENSE
 
-This project uses uses jsautocompletedropdowncontrol released under MIT License https://github.com/IntersoftDev/jsautocompletedropdowncontrol?tab=MIT-1-ov-file#readme
+This project uses jsautocompletedropdowncontrol released under MIT License https://github.com/IntersoftDev/jsautocompletedropdowncontrol?tab=MIT-1-ov-file#readme

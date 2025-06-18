@@ -1,26 +1,20 @@
 async function WriteTextToClipboard(text) {
-    await ClipboardApi.send('ClipboardWriteText', text);
+    await navigator.clipboard.writeText(text);
 }
 
 async function OpenUrl(url) {
-    (async () => {
-        await ClipboardApi.send('OpenUrlInShell', url);
-        return false;
-    })().catch(e => {
-        console.log(e);
-    });    
-
-    return false;
+    window.open(url);
 }
 
 async function GetAppVersion() {
-    let appVersion = await AppApi.send('AppApiGetVersion', null);
+    let appVersion = "v3.1.10";
     return appVersion;
 }
 
-async function ReadFile(seedfile) {
-    array = await FileApi.send('FileApiReadFile', seedfile);
-    return array;
+async function ReadFile(url) {
+    let response = await (await fetch(url));
+    const text = await response.text();
+    return text;
 }
 
 async function getLocalStoragePath() {
@@ -83,12 +77,12 @@ async function keyStoreAccountEthFromJson(json, password) {
 }
 
 async function weiToEther(wei) {
-    let eth = await FormatApi.send('FormatApiWeiToEther', wei);
+    let eth = ethers.formatEther(wei)
     return eth
 }
 
 async function etherToWei(eth) {
-    let wei = await FormatApi.send('FormatApiEtherToWei', eth);
+    let wei = ethers.parseUnits(eth, "ether")
     return wei
 }
 
@@ -106,7 +100,7 @@ function commify(value) {
 }
 
 async function weiToEtherFormatted(wei) {
-    let eth = await FormatApi.send('FormatApiWeiToEther', wei);
+    let eth = ethers.formatEther(wei)
     eth = commify(eth);
 
     if (eth.endsWith(".")) {
@@ -123,15 +117,36 @@ async function hexWeiToEthFormatted(hex) {
 }
 
 async function isValidEther(quantity) {
-    let isValid = await FormatApi.send('FormatApiIsValidEther', quantity);
-    return isValid
+    try {
+        if (quantity.startsWith("0")) {
+            return false;
+        }
+        const number = ethers.FixedNumber.fromString(quantity);
+        let isNegative = number.isNegative();
+        return !isNegative;
+    }
+    catch (error) {
+        return false;
+    }
 }
 
 async function compareEther(val1, val2) {
-    const compareRequest = {
-        num1: val1,
-        num2: val2
+    try {
+        const number1 = ethers.FixedNumber.fromString(val1.replaceAll(",",""));
+        const number2 = ethers.FixedNumber.fromString(val2.replaceAll(",", ""));
+        if (number1.isNegative() || number2.isNegative()) {
+            throw new Error("error parsing numbers. negative values.");
+        }
+
+        if (number1.eq(number2)) {
+            return 0;
+        } else if (number1.gt(number2)) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
-    let ret = await FormatApi.send('FormatApiCompareEther', compareRequest);
-    return ret;
+    catch (error) {
+        throw new Error("error parsing numbers");
+    }
 }

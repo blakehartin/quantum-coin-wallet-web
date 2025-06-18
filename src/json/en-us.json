@@ -31,7 +31,7 @@
       },
       {
         "title": "Wallet Location",
-        "desc": "Your wallets will be encrypted and saved in the following path in your computer. Running cleaning software can delete the wallets. You should ensure that this path is excluded from cleanup. [STORAGE_PATH]"
+        "desc": "Your wallets will be encrypted and saved in the following path in your computer. Running cleaning software or deleting browser cache or history can delete the wallets. You should ensure that this path is excluded from cleanup. [STORAGE_PATH]"
       }
     ],
   "quizStep": "Safety Quiz [STEP] OF [TOTAL_STEPS]",
@@ -72,7 +72,7 @@
         "Applications"
       ],
       "correctChoice": 2,
-      "afterQuizInfo": "This is correct. Your wallets will be encrypted and saved in [STORAGE_PATH]. Running cleaning software can delete the wallets. You should ensure that this path is excluded from cleanup."
+      "afterQuizInfo": "This is correct. Your wallets will be encrypted and saved in [STORAGE_PATH]. Running cleaning software or clearing the browser history or cache can delete the wallets. You should ensure that this path is excluded from cleanup."
     }
   ],
     "langValues": {

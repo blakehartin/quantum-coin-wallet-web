@@ -3,9 +3,10 @@
 const DERIVED_KEY_SALT = "derivedkeysalt"; //key for key-value of storage
 const ENCRYPTED_MAIN_KEY = "encryptedmainkey"; //key for key-value of storage
 const IS_EULA_ACCEPTED = "eulaaccepted"; //key for key-value of storage
+const StorageApi = window.localStorage;
 
 async function storageGetPath() {
-    let path = await LocalStorageApi.send('StorageApiGetPath', null);
+    let path = "Browser Cache";
     return path;
 }
 
@@ -99,12 +100,12 @@ async function storageDecryptData(passphrase, encryptedDataString) {
     mainKey : An aes key that is created in random. It is created only the first time. This key is used to encrypt all other data. This key is encrypted with the derivedKey and the encrypted key is saved to storage.
 */
 async function storageCreateMainKey(passphrase) {
-    let salt = await StorageApi.GetItem(DERIVED_KEY_SALT);
+    let salt = await StorageApi.getItem(DERIVED_KEY_SALT);
     if (salt != null) {
         throw new Error('storageCreateMainKey DERIVED_KEY_SALT already exists.');
     }
 
-    let encryptedMainKeyCheck = await StorageApi.GetItem(ENCRYPTED_MAIN_KEY);
+    let encryptedMainKeyCheck = await StorageApi.getItem(ENCRYPTED_MAIN_KEY);
     if (encryptedMainKeyCheck != null) {
         throw new Error('storageCreateMainKey MAIN_KEY already exists.');
     }
@@ -141,7 +142,7 @@ async function storageDoesItemExist(key) {
         throw new Error('storageDoesItemExist key should be of type string.');
     }
 
-    let result = await StorageApi.GetItem(key);
+    let result = await StorageApi.getItem(key);
     if (result == null) {
         return false;
     }
@@ -155,10 +156,11 @@ async function storageGetItem(key) {
         throw new Error('storageGetItem key should be of type string.');
     }
 
-    let result = await StorageApi.GetItem(key);
+    let result = await StorageApi.getItem(key);
     if (result == null) {
         return null;
     }
+
     var item = JSON.parse(result);
 
 
@@ -188,7 +190,7 @@ async function storageSetItem(key, value) {
         value: value,
         hash: hash
     }
-    let ret = await StorageApi.SetItem(key, item);
+    let ret = await StorageApi.setItem(key, JSON.stringify(item));
 
     let result = await storageGetItem(key);
     if (result == null) {
@@ -280,5 +282,5 @@ async function storageSetSecureItem(passphrase, key, value) {
         return true;
     } else {
         throw new Error('storageSetSecureItem data mismatch after save.');
-    }    
+    }
 }

@@ -8,6 +8,7 @@ const CRYPTO_COMPACT_SIGNATURE_BYTES = 2558
 const CRYPTO_AES_KEY_SIZE = 32;
 const CRYPTO_AES_IV_SIZE = 16;
 const SCRYPT_SALT_SIZE = 32;
+const AES_ALGORITHM = 'AES-CBC';
 
 class EncryptedPayload {
 
@@ -248,45 +249,55 @@ function cryptoVerify(messageArray, sigArray, publicKeyArray) {
     return true;
 }
 
-async function cryptoEncrypt(base64data) {
-    encrypted = await CryptoApi.send('CryptoApiEncrypt', base64data);
-    return encrypted;
-}
-
 function cryptoNewAesKey() {
     return cryptoRandom(CRYPTO_AES_KEY_SIZE);
 }
 
 async function cryptoApiEncrypt(aesKeyArray, plainText) {
+    let utf8Encoder = new TextEncoder();
+    const plainTextBytesBuffer = utf8Encoder.encode(plainText).buffer;
+
+    const aesKey = await window.crypto.subtle.importKey(
+        "raw", //can be "jwk" or "raw"
+        aesKeyArray,
+        {   //this is the algorithm options
+            name:AES_ALGORITHM,
+            length: 256
+        },
+        false, //whether the key is extractable (i.e. can be used in exportKey)
+        ["encrypt", "decrypt"] //can "encrypt", "decrypt", "wrapKey", or "unwrapKey"
+    )
+
     const iv = cryptoRandom(CRYPTO_AES_IV_SIZE);
     const ivBase64 = bytesToBase64(iv);
-
-    const encryptRequest = {
-        key: bytesToBase64(aesKeyArray),
-        iv: ivBase64,
-        plainText: plainText
-    }
-    const cipherText = await CryptoApi.send('CryptoApiEncrypt', encryptRequest);
+    const cipherTextBytesBuffer = await window.crypto.subtle.encrypt({ name: AES_ALGORITHM, iv: iv }, aesKey, plainTextBytesBuffer);
+    const cipherTextBytes =  new Uint8Array(cipherTextBytesBuffer);
+    const cipherText = bytesToBase64(cipherTextBytes);
 
     const encryptedPayload = new EncryptedPayload(cipherText, ivBase64);
-
     return encryptedPayload;
 }
 
 async function cryptoApiDecrypt(aesKeyArray, encryptedPayload) {
+    const aesKey = await window.crypto.subtle.importKey(
+        "raw", //can be "jwk" or "raw"
+        aesKeyArray,
+        {   //this is the algorithm options
+            name:AES_ALGORITHM,
+            length: 256
+        },
+        false, //whether the key is extractable (i.e. can be used in exportKey)
+        ["encrypt", "decrypt"] //can "encrypt", "decrypt", "wrapKey", or "unwrapKey"
+    )
+    const iv = base64ToBytes(encryptedPayload.iv).buffer;
+    const cipherTextBytes = base64ToBytes(encryptedPayload.cipherText);
+    const cipherTextBytesBuffer = cipherTextBytes.buffer;
 
-    try {
-        const decryptRequest = {
-            key: bytesToBase64(aesKeyArray),
-            iv: encryptedPayload.iv,
-            cipherText: encryptedPayload.cipherText
-        }
-
-        plainText = await CryptoApi.send('CryptoApiDecrypt', decryptRequest);
-        return plainText;
-    } catch (error) {
-        return null;
-    }
+    let plainTextBytesBuffer = await window.crypto.subtle.decrypt({ name: AES_ALGORITHM, iv: iv }, aesKey, cipherTextBytesBuffer);
+    let plainTextBytes =  new Uint8Array(plainTextBytesBuffer);
+    let utf8Decoder = new TextDecoder();
+    let plainText = utf8Decoder.decode(plainTextBytes);
+    return plainText;
 }
 
 async function cryptoApiScryptAutoSalt(secretString) {

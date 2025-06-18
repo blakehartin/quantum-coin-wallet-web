@@ -194,6 +194,7 @@ button, input[type="submit"], input[type="reset"] {
     margin-right: auto;
     backdrop-filter: blur(32px);
     box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.3);
+    max-height: calc(100vh - 200px);
 }
 
 .text-wallet-address {
