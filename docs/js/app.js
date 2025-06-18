@@ -227,7 +227,7 @@ function resizeBoxes() {
 
     elements = document.getElementsByClassName("roundex-box-middle");
     for(let i =0; i < elements.length;i++){
-        
+
     }
 }
 
