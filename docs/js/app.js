@@ -174,6 +174,8 @@ async function initApp() {
         }
     }
 
+    document.getElementById("modalInitDialog").style.display = 'none';
+
     let eulaStatus = await isEulaAccepted();
     if (eulaStatus == false) {
         showEula();
@@ -697,6 +699,7 @@ function saveFile(content, mimeType, filename) {
     a.setAttribute('href', url);
     a.setAttribute('download', filename);
     a.click();
+    showAlert(langJson.langValues.backupDownloadInfo);
 }
 
 async function showWalletScreen() {
